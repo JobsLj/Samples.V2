@@ -26,6 +26,17 @@ namespace AspNetCore2.Api.Reservoirs.Controllers
             return "OK";
         }
 
+        [HttpGet("exponentially-decaying-low-weight")]
+        public async Task<string> ExponentiallyDecayingLowWeight()
+        {
+            using (_metrics.Measure.Timer.Time(MetricsRegistry.TimerUsingForwardDecayingLowWeightThresholdReservoir))
+            {
+                await Delay();
+            }
+
+            return "OK";
+        }
+
         [HttpGet("sliding-window")]
         public async Task<string> SlidingWindow()
         {
@@ -50,7 +61,19 @@ namespace AspNetCore2.Api.Reservoirs.Controllers
 
         private Task Delay()
         {
-            return Task.Delay(DateTime.Now.Second, HttpContext.RequestAborted);
+            var second = DateTime.Now.Second;
+
+            if (second <= 20)
+            {
+                return Task.CompletedTask;
+            }
+
+            if (second <= 40)
+            {
+                return Task.Delay(TimeSpan.FromMilliseconds(50), HttpContext.RequestAborted);
+            }
+
+            return Task.Delay(TimeSpan.FromMilliseconds(100), HttpContext.RequestAborted);
         }
     }
 }

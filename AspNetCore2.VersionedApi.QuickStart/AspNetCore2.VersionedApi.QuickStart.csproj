@@ -9,20 +9,12 @@
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<!--<DefineConstants>$(DefineConstants);HOSTING_OPTIONS;REPORTING</DefineConstants>-->
-		<DefineConstants>$(DefineConstants);REPORTING</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<!--<DefineConstants>$(DefineConstants);HOSTING_OPTIONS;REPORTING</DefineConstants>-->
-		<DefineConstants>$(DefineConstants);REPORTING</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="App.Metrics" Version="3.0.0" />
 		<PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="3.0.0" />
 		<PackageReference Include="App.Metrics.Reporting.Console" Version="3.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
 	</ItemGroup>
 

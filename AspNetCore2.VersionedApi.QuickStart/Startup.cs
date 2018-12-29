@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AspNetCore2.Api.QuickStart
+namespace AspNetCore2.VersionedApi.QuickStart
 {
     public class Startup
     {
@@ -17,7 +17,21 @@ namespace AspNetCore2.Api.QuickStart
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddMetrics();
+            services
+                .AddApiVersioning(options =>
+                {
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    options.DefaultApiVersion = ApiVersion.Parse("1.1");
+                    options.ReportApiVersions = true;
+                });
+
+            services
+                .AddMvcCore()
+                .AddVersionedApiExplorer(o => o.GroupNameFormat = "v'VVV");
+
+            services
+                .AddMvc()
+                .AddMetrics();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

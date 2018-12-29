@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using App.Metrics.Scheduling;
@@ -23,7 +25,7 @@ namespace AspNetCore2.Api.Reservoirs
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.AddMetricsResourceFilter());
+            services.AddMvc().AddMetrics();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -40,13 +42,14 @@ namespace AspNetCore2.Api.Reservoirs
                 BaseAddress = ApiBaseAddress
             };
 
-            var requestSamplesScheduler = new AppMetricsTaskScheduler(TimeSpan.FromMilliseconds(100), async () =>
+            var requestSamplesScheduler = new AppMetricsTaskScheduler(TimeSpan.FromMilliseconds(10), async () =>
             {
                 var uniform = httpClient.GetStringAsync("api/reservoirs/uniform");
                 var exponentiallyDecaying = httpClient.GetStringAsync("api/reservoirs/exponentially-decaying");
+                var exponentiallyDecayingLowWeight = httpClient.GetStringAsync("api/reservoirs/exponentially-decaying-low-weight");
                 var slidingWindow = httpClient.GetStringAsync("api/reservoirs/sliding-window");
 
-                await Task.WhenAll(uniform, exponentiallyDecaying, slidingWindow);
+                await Task.WhenAll(uniform, exponentiallyDecaying, exponentiallyDecayingLowWeight, slidingWindow);
             });
 
             requestSamplesScheduler.Start();
